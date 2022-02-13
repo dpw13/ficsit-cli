@@ -138,6 +138,24 @@ func (i *Installations) AddInstallation(ctx *GlobalContext, installPath string, 
 	return installation, nil
 }
 
+func (i *Installations) DeleteInstallation(path string) error {
+	var idxToDelete = -1
+	for i, install := range i.Installations {
+		if install.Path == path {
+			idxToDelete = i
+			break
+		}
+	}
+
+	if idxToDelete < 0 {
+		return fmt.Errorf("installation with path %s does not exist", path)
+	}
+
+	i.Installations = append(i.Installations[:idxToDelete], i.Installations[idxToDelete+1:]...)
+
+	return nil
+}
+
 func (i *Installations) GetInstallation(installPath string) *Installation {
 	for _, install := range i.Installations {
 		if install.Path == installPath {

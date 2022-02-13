@@ -129,7 +129,7 @@ func profilesToList(root components.RootModel) []list.Item {
 		items[i] = utils.SimpleItem{
 			ItemTitle: temp.Name,
 			Activate: func(msg tea.Msg, currentModel tea.Model) (tea.Model, tea.Cmd) {
-				newModel := NewProfile(root, currentModel, temp)
+				newModel := NewEditProfile(root, currentModel, temp)
 				return newModel, newModel.Init()
 			},
 		}

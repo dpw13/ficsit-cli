@@ -8,37 +8,34 @@ import (
 	"github.com/satisfactorymodding/ficsit-cli/tea/utils"
 )
 
-var _ tea.Model = (*modSemver)(nil)
+var _ tea.Model = (*newInstallation)(nil)
 
-type modSemver struct {
+type newInstallation struct {
 	root   components.RootModel
 	parent tea.Model
 	input  textinput.Model
-	title  string
-	mod    utils.Mod
+	path   string
 }
 
-func NewModSemver(root components.RootModel, parent tea.Model, mod utils.Mod) tea.Model {
-	model := modSemver{
+func NewNewInstallation(root components.RootModel, parent tea.Model) tea.Model {
+	model := newInstallation{
 		root:   root,
 		parent: parent,
 		input:  textinput.NewModel(),
-		title:  lipgloss.NewStyle().Padding(0, 2).Render(utils.TitleStyle.Render(mod.Name)),
-		mod:    mod,
+		path:   utils.NonListTitleStyle.Render("/path/to/installation"),
 	}
 
-	model.input.Placeholder = ">=1.2.3"
 	model.input.Focus()
 	model.input.Width = root.Size().Width
 
 	return model
 }
 
-func (m modSemver) Init() tea.Cmd {
+func (m newInstallation) Init() tea.Cmd {
 	return nil
 }
 
-func (m modSemver) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m newInstallation) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
@@ -47,11 +44,13 @@ func (m modSemver) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case KeyEscape:
 			return m.parent, nil
 		case KeyEnter:
-			err := m.root.GetCurrentProfile().AddMod(m.mod, m.input.Value())
-			if err != nil {
+			// Use the currently selected profile for the new installation
+			var selectedProfile = m.root.GetGlobal().Profiles.SelectedProfile
+			if _, err := m.root.GetGlobal().Installations.AddInstallation(m.root.GetGlobal(), m.input.Value(), selectedProfile); err != nil {
 				panic(err) // TODO Handle Error
 			}
-			return m.parent, nil
+
+			return m.parent, updateInstallationListCmd
 		default:
 			var cmd tea.Cmd
 			m.input, cmd = m.input.Update(msg)
@@ -64,7 +63,7 @@ func (m modSemver) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m modSemver) View() string {
+func (m newInstallation) View() string {
 	inputView := lipgloss.NewStyle().Padding(1, 2).Render(m.input.View())
-	return lipgloss.JoinVertical(lipgloss.Left, m.root.View(), m.title, inputView)
+	return lipgloss.JoinVertical(lipgloss.Left, m.root.View(), m.path, inputView)
 }
