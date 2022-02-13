@@ -15,17 +15,17 @@ import (
 var _ tea.Model = (*installation)(nil)
 
 type installation struct {
-	root       components.RootModel
-	list       list.Model
-	parent     tea.Model
-	installation    *cli.Installation
-	hadRenamed bool
+	root         components.RootModel
+	list         list.Model
+	parent       tea.Model
+	installation *cli.Installation
+	hadRenamed   bool
 }
 
 func NewEditInstallation(root components.RootModel, parent tea.Model, installationData *cli.Installation) tea.Model {
 	model := installation{
-		root:    root,
-		parent:  parent,
+		root:         root,
+		parent:       parent,
 		installation: installationData,
 	}
 

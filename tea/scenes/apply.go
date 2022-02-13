@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path"
-	
+
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -31,7 +31,7 @@ type apply struct {
 
 func NewApply(root components.RootModel, parent tea.Model) tea.Model {
 	model := apply{
-		root: root,
+		root:     root,
 		viewport: viewport.Model{},
 		spinner:  spinner.NewModel(),
 		parent:   parent,
@@ -136,19 +136,23 @@ func NewApply(root components.RootModel, parent tea.Model) tea.Model {
 					model.log <- modLog
 					continue
 				}
-	
+
 				out, err := os.Create(destPath)
 				if err != nil {
-					modLog += fmt.Sprintf("Could not create output file %s:\n %s\n\n", destPath, err)
+					modLog += fmt.Sprintf("Could not create output file %s:\n %s\n", destPath, err)
 					model.log <- modLog
 					continue
 				}
-	
-				io.Copy(out, pluginFile)
+
+				_, err = io.Copy(out, pluginFile)
+				if err != nil {
+					modLog += fmt.Sprintf("Could not write output file %s:\n %s\n", destPath, err)
+					model.log <- modLog
+					continue
+				}
 			}
 			modLog += "Done"
 			model.log <- modLog
-
 		}
 	}()
 

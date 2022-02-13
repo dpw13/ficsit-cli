@@ -149,9 +149,9 @@ func (i *Installations) DeleteInstallation(path string) error {
 
 	if idxToDelete < 0 {
 		return fmt.Errorf("installation with path %s does not exist", path)
-	} else {
-		i.Installations = append(i.Installations[:idxToDelete], i.Installations[idxToDelete+1:]...)
 	}
+
+	i.Installations = append(i.Installations[:idxToDelete], i.Installations[idxToDelete+1:]...)
 
 	return nil
 }

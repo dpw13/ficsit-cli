@@ -8,8 +8,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"github.com/satisfactorymodding/ficsit-cli/utils"
 	tea_utils "github.com/satisfactorymodding/ficsit-cli/tea/utils"
+	"github.com/satisfactorymodding/ficsit-cli/utils"
 	"github.com/spf13/viper"
 )
 

@@ -22,7 +22,7 @@ func NewNewInstallation(root components.RootModel, parent tea.Model) tea.Model {
 		root:   root,
 		parent: parent,
 		input:  textinput.NewModel(),
-		path:  utils.NonListTitleStyle.Render("/path/to/installation"),
+		path:   utils.NonListTitleStyle.Render("/path/to/installation"),
 	}
 
 	model.input.Focus()
